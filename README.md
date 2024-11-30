@@ -36,7 +36,7 @@ The exposed models aren't limited to coding tasks—you can connect any AI clien
 
 
 ## ✨ Magic Time
-Now you can connect Cline or any other AI client to `http://localhost:15432` and start coding with the power of GPT-4o and Claude-3.5-Sonnet without worrying about the cost.
+Now you can connect Cline or any other AI client to `http://localhost:15432` and start coding with the power of GPT-4o and Claude-3.5-Sonnet without worrying about the cost. Note, the copilot-more manages the access token, you can use whatever string as API keys if Cline or the AI tools ask for one.
 
 
 ## 🤔 Limitation
