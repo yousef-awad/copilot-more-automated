@@ -4,16 +4,22 @@
 
 The exposed models aren't limited to coding tasks—you can connect any AI client and customize parameters like temperature, context window length, and more.
 
+# Ethical Use
+- Respect the GitHub Copilot terms of service.
+- Minimize the use of the models for non-coding purposes.
+- Be mindful of the risk of being banned by GitHub Copilot for misuse.
+
 
 ## 🏃‍♂️ How to Run
 
 1. Get the refresh token
 
    A refresh token is used to get the access token. This token should never be shared with anyone :). You can get the refresh token by following the steps below:
-   
+
     - Run the following command and note down the returned `device_code` and `user_code`.:
-    
+
     ```bash
+    # 01ab8ac9400c4e429b23 is the client_id for the VS Code
     curl https://github.com/login/device/code -X POST -d 'client_id=01ab8ac9400c4e429b23&scope=user:email'
     ```
 
@@ -28,7 +34,7 @@ The exposed models aren't limited to coding tasks—you can connect any AI clien
     - Note down the `access_token` starting with `gho_`.
 
 
-1. Install and run copilot_more
+2. Install and run copilot_more
 
     ```bash
     git clone https://github.com/jjleng/copilot-more.git
@@ -47,6 +53,8 @@ Now you can connect Cline or any other AI client to `http://localhost:15432` and
 ## 🤔 Limitation
 
 The GH Copilot models sit behind an API server that is not fully compatible with the OpenAI API. You cannot pass in a message like this:
+
+```json
     {
       "role": "user",
       "content": [
@@ -60,4 +68,5 @@ The GH Copilot models sit behind an API server that is not fully compatible with
         }
       ]
     }
+```
 copilot-more takes care of this limitation by converting the message to a format that the GH Copilot API understands. However, without the `type`, we cannot leverage the models' vision capabilities, so that you cannot do screenshot analysis.
