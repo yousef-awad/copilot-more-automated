@@ -1,3 +1,6 @@
+# Notice
+I will take copilot-more offline by 1/18/2025. This is to prevent people from being banned.
+
 # copilot-more
 
 `copilot-more` maximizes the value of your GitHub Copilot subscription by exposing models like gpt-4o and Claude-3.5-Sonnet for use in agentic coding tools such as Cline, or any tool that supports bring-your-own-model setups. Unlike costly pay-as-you-go APIs, this approach lets you leverage these powerful models affordably. (Yes, $10 per month maximum.)
