@@ -1,5 +1,5 @@
-# Notice
-I will take copilot-more offline by 1/18/2025. This is to prevent people from being banned.
+# ATTENTION Please
+I want to hear your thoughts on if we should keep or take down the project. See https://github.com/jjleng/copilot-more/issues/22. If people don't care, I will take the project down on 1/25/2025. 
 
 # copilot-more
 
