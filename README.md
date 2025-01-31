@@ -1,6 +1,3 @@
-# ATTENTION Please
-I want to hear your thoughts on if we should keep or take down the project. See https://github.com/jjleng/copilot-more/issues/22. If people don't care, I will take the project down on 1/25/2025. 
-
 # copilot-more
 
 `copilot-more` maximizes the value of your GitHub Copilot subscription by exposing models like gpt-4o and Claude-3.5-Sonnet for use in agentic coding tools such as Cline, or any tool that supports bring-your-own-model setups. Unlike costly pay-as-you-go APIs, this approach lets you leverage these powerful models affordably. (Yes, $10 per month maximum.)
