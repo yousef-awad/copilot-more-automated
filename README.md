@@ -12,9 +12,9 @@ The exposed models aren't limited to coding tasks—you can connect any AI clien
 
 ## 🏃‍♂️ How to Run
 
-1. Get the refresh token
+1. Get refresh tokens
 
-   A refresh token is used to get the access token. This token should never be shared with anyone :). You can get the refresh token by following the steps below:
+   A refresh token is used to get the access token. These tokens should never be shared with anyone :). You can get multiple refresh tokens to handle rate limits by following these steps for each token:
 
     - Run the following command and note down the returned `device_code` and `user_code`.:
 
@@ -32,31 +32,36 @@ The exposed models aren't limited to coding tasks—you can connect any AI clien
     ```
 
     - Note down the `access_token` starting with `gho_`.
+    - Repeat the process for each token you want to add (recommended: 2-3 tokens for optimal performance)
 
 
 2. Install and run copilot_more
 
-  * Bare metal installation:
+   * Bare metal installation:
 
-    ```bash
-    git clone https://github.com/jjleng/copilot-more.git
-    cd copilot-more
-    # install dependencies
-    poetry install
-    # run the server. Replace gho_xxxxx with the refresh token you got in the previous step. Note, you can use any port number you want.
-    REFRESH_TOKEN=gho_xxxxx poetry run uvicorn copilot_more.server:app --port 15432
-    ```
-  * Docker Compose installation:
+     ```bash
+     git clone https://github.com/jjleng/copilot-more.git
+     cd copilot-more
+     # install dependencies
+     poetry install
+     # run the server with multiple tokens
+     REFRESH_TOKENS=gho_token1,gho_token2,gho_token3 poetry run uvicorn copilot_more.server:app --port 15432
+     # Or use the legacy single token mode
+     REFRESH_TOKEN=gho_xxxxx poetry run uvicorn copilot_more.server:app --port 15432
+     ```
+   * Docker Compose installation:
 
-    ```bash
-    git clone https://github.com/jjleng/copilot-more.git
-    cd copilot-more
-    # run the server. Ensure you either have the refresh token in the .env file or pass it as an environment variable.
-    docker-compose up --build
-    ```
+     ```bash
+     git clone https://github.com/jjleng/copilot-more.git
+     cd copilot-more
+     # Add your tokens to the .env file:
+     # REFRESH_TOKENS=gho_token1,gho_token2,gho_token3
+     # run the server
+     docker-compose up --build
+     ```
 
 
-3. Alternatively, use the `refresh-token.sh` script to automate the above.
+3. Alternatively, use the `refresh-token.sh` script to automate the token generation process.
 
 ## ✨ Magic Time
 Now you can connect Cline or any other AI client to `http://localhost:15432` and start coding with the power of GPT-4o and Claude-3.5-Sonnet without worrying about the cost. Note, the copilot-more manages the access token, you can use whatever string as API keys if Cline or the AI tools ask for one.
@@ -72,6 +77,61 @@ Now you can connect Cline or any other AI client to `http://localhost:15432` and
      * **Model**: `gpt-4o`, `claude-3.5-sonnet`, `o1`, `o1-mini`
 
 
+## 🔄 Token Rotation and Management
+
+copilot-more supports both automatic and manual token rotation to handle rate limits effectively:
+
+### Automatic Token Rotation
+- Configure multiple refresh tokens using the `REFRESH_TOKENS` environment variable (comma-separated)
+- When a rate limit (429) error is encountered, the system automatically switches to the next available token
+- Exponential backoff is applied to rate-limited tokens (starting at 2 minutes, up to 1 hour maximum)
+- Tokens automatically become available again after their backoff period expires
+
+### Quick Token Commands
+The included `token-cli.sh` script provides simple commands for token management:
+
+```bash
+# Switch to next token
+./token-cli.sh next   # or just: ./token-cli.sh n
+
+# Show token status
+./token-cli.sh status # or just: ./token-cli.sh s
+```
+
+Status indicators:
+- ✓ : Currently active token
+- ✅ : Available token
+- ⚠️ : Rate limited token
+
+You can also set a custom port if you're not using the default 15432:
+```bash
+PORT=8080 ./token-cli.sh next
+```
+
+### Advanced API Endpoints
+For advanced use cases, you can use the raw API endpoints:
+
+1. **Manually Cycle Tokens**
+   ```bash
+   curl -X POST http://localhost:15432/tokens/cycle
+   ```
+
+2. **Check Token Status**
+   ```bash
+   curl http://localhost:15432/tokens/status
+   ```
+
+Each token operation logs "USING TOKEN X/Y" where X is the current token number and Y is the total number of tokens.
+
+Example configuration:
+```bash
+# Configure multiple tokens for both automatic and manual rotation
+REFRESH_TOKENS=gho_token1,gho_token2,gho_token3
+
+# Legacy single token mode (still supported but not recommended)
+REFRESH_TOKEN=gho_xxxxx
+```
+
 ## 🔍 Debugging
 
 For troubleshooting integration issues, you can enable traffic logging to inspect the API requests and responses.
@@ -81,14 +141,14 @@ For troubleshooting integration issues, you can enable traffic logging to inspec
 To enable logging, set the `RECORD_TRAFFIC` environment variable:
 
 ```bash
-RECORD_TRAFFIC=true REFRESH_TOKEN=gho_xxxx poetry run uvicorn copilot_more.server:app --port 15432
+RECORD_TRAFFIC=true REFRESH_TOKENS=gho_token1,gho_token2 poetry run uvicorn copilot_more.server:app --port 15432
 ```
 
 All traffic will be logged to files in the current directory with the naming pattern: copilot_traffic_YYYYMMDD_HHMMSS.mitm
 
 Attach this file when reporting issues.
 
-Note: the Authorization header has ben redacted. So the refresh token won't be leaked.
+Note: the Authorization header has been redacted. So the refresh tokens won't be leaked.
 
 ## 🤔 Limitation
 
